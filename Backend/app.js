@@ -1,24 +1,33 @@
-var express = require(‘express’);
-require(‘dotenv’).config();
-const PORT = process.env.PORT || 5000
-var flash = require(‘connect-flash’);
-var passport = require(“passport”);
-var request = require(‘request’);
-var session = require(“express-session”);
-var app = express();
-var bodyParser = require(‘body-parser’);
-var path = require(‘path’);
+const express = require('express');
+const app = express();
+const properties = require('./utilities/properties');
 
-app.use(require(‘cookie-parser’)());
-app.use(require(‘body-parser’).urlencoded({ extended: true }));
-const expressSession = require(‘express-session’);
-app.use(expressSession({secret: ‘mySecretKey’}));
+let session = require('express-session');
+let passport = require('passport');
+
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(session({
+	secret:'keyboard cat',
+	resave: false,
+	saveUninitialized: false
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(‘/public’, express.static(__dirname + ‘/public’));
-app.use(flash());
-app.use(session({secret: ‘keyboard cat’}))
-app.use(bodyParser());
-app.set(‘view engine’, ‘pug’);
-app.set(‘view options’, { layout: false });
-require(‘./lib/routes.js’)(app);
+
+app.use('/', require('./routes'));
+
+passport.use(require('./models/localStrategy'));
+
+passport.serializeUser((user, done) => {
+	done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+	done(null, user);
+});
+
+app.listen(properties.port, () => {
+	console.log('Listening on port ' + properties.port);
+});
