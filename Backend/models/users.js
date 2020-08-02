@@ -54,3 +54,75 @@ module.exports.register = user => {
         })
     })
 };
+
+module.exports.modify = user => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            obj.none(properties.updateUser, [user.nombre, user.apellido, user.descripcion, user.email, user.username, user.id]).then(data => {
+                res(user);
+                obj.done();
+            }).catch(err => {
+                console.log(err);
+                rej("Database Error");
+            });
+        }).catch(err => {
+            console.log(err);
+            rej("Database Error");
+        });
+    });
+};
+
+module.exports.changePrivacy = user => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            obj.none(properties.changePrivacy, [user.is_private, user.id]).then(data => {
+                res(user);
+                obj.done();
+            }).catch(err => {
+                console.log(err);
+                rej("Database Error");
+            });
+        }).catch(err => {
+            console.log(err);
+            rej("Database Error");
+        });
+    });
+};
+
+module.exports.getEmail = (email, id) => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            obj.oneOrNone(properties.checkEmail, [email, id]).then (data => {
+                if(data)
+                    res(true);
+                else
+                    res(false);
+            }).catch(err => {
+                console.log(err);
+                rej(properties.dbError);
+            })
+        }).catch(err => {
+            console.log(err);
+            rej(properties.dbConError);
+        });
+    });
+};
+
+module.exports.getUsername = (username, id) => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            obj.oneOrNone(properties.checkUsername, [username, id]).then (data => {
+                if(data)
+                    res(true);
+                else
+                    res(false);
+            }).catch(err => {
+                console.log(err);
+                rej(properties.dbError);
+            })
+        }).catch(err => {
+            console.log(err);
+            rej(properties.dbConError);
+        });
+    });
+};

@@ -24,7 +24,7 @@ module.exports.isLogged = (req, res, next) => {
 };
 
 module.exports.checkEmail = (req, res, next) => {
-    usersHelper.getEmail(req.body.email).then(data => {
+    usersHelper.getEmail(req.body.email, req.user.id).then(data => {
         if(data)
             res.status(403).send({ status: 403, message: "Email already in use" });
         else
@@ -35,7 +35,7 @@ module.exports.checkEmail = (req, res, next) => {
 };
 
 module.exports.checkUsername = (req, res, next) => {
-    usersHelper.getUsername(req.body.username).then(data => {
+    usersHelper.getUsername(req.body.username, req.user.id).then(data => {
         if(data)
             res.status(403).send({ status: 403, message: "Username already in use" });
         else

@@ -13,3 +13,7 @@ CREATE TABLE public.auth_user (
 
 
 ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+------------------------------------------------------------------------------------------------
+
+ALTER TABLE auth_user ADD COLUMN is_private BOOLEAN DEFAULT TRUE;

@@ -35,4 +35,26 @@ router.post('/register', auth.isLogged, (req, res) => {
     })
 });
 
+router.put('/modify', auth.isAuth, auth.checkEmail, auth.checkUsername, (req, res) => {
+    let user = req.body;
+    user.id = req.user.id;
+    users.modify(user).then(data => {
+        delete data.password;
+        res.status(200).send({ status: 200, message: "Modified successfully.", data: data });
+    }).catch(err => {
+        res.status(500).send({ status: 500, message: err });
+    });
+});
+
+router.put('/changeprivacy', auth.isAuth, (req, res) => {
+    let user = req.body;
+    user.id = req.user.id;
+    users.changePrivacy(user).then(data => {
+        delete data.password;
+        res.status(200).send({ status: 200, message: "Privacy Changed successfully.", data: data });
+    }).catch(err => {
+        res.status(500).send({ status: 500, message: err });
+    });
+});
+
 module.exports = router;
