@@ -126,3 +126,59 @@ module.exports.getUsername = (username, id) => {
         });
     });
 };
+
+module.exports.follow = (body) => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            if(body.follow) {
+                obj.none(properties.follow, [body.user, body.target]).then (() => {
+                    res();
+                }).catch(err => {
+                    console.log(err);
+                    rej(properties.dbError);
+                })
+            } else {
+                obj.none(properties.unfollow, [body.user, body.target]).then (() => {
+                    res();
+                }).catch(err => {
+                    rej(err);
+                })
+            }
+        }).catch(err => {
+            console.log(err);
+            rej(properties.dbConError);
+        });
+    });
+};
+
+module.exports.getFollowers = (user) => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            obj.manyOrNone(properties.getFollowers, [user]).then (data => {
+                res(data);
+            }).catch(err => {
+                console.log(err);
+                rej(properties.dbError);
+            })
+        }).catch(err => {
+            console.log(err);
+            rej(properties.dbConError);
+        });
+    });
+};
+
+module.exports.getPosts = (user) => {
+    return new Promise((res, rej) => {
+        db.connect().then(obj => {
+            obj.manyOrNone(properties.getPosts, [user]).then (data => {
+                res(data);
+            }).catch(err => {
+                console.log(err);
+                rej(properties.dbError);
+            })
+        }).catch(err => {
+            console.log(err);
+            rej(properties.dbConError);
+        });
+    });
+};
